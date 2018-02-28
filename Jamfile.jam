@@ -2,7 +2,10 @@
 
 SubDir TOP external doctest ;
 
-SOURCES += @($(SUBDIR)/fips/*.cpp:W) ;
+{
+    local SOURCES ;
+    SOURCES += @($(SUBDIR)/fips/*.cpp:W) ;
 
-C.IncludeDirectories * : doctest ;
-C.Library external-doctest : $(SOURCES) ;
+    C.IncludeDirectories * : doctest ;
+    C.Library external-doctest : $(SOURCES) ;
+}
