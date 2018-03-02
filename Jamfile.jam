@@ -7,6 +7,6 @@ SubDir TOP external doctest ;
     SOURCES += @($(SUBDIR)/fips/*.cpp:W) ;
 
     C.IncludeDirectories * : doctest ;
-    C.Defines * : DOCTEST_CONFIG_NO_EXCEPTIONS ;
+    C.Defines * : DOCTEST_CONFIG_NO_EXCEPTIONS USING_DOCTEST ;
     C.Library external-doctest : $(SOURCES) ;
 }
