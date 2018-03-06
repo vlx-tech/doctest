@@ -690,6 +690,8 @@ public:
 
     String(const char* in);
 
+    String(const char* in, size_t len);
+
     String(const String& other) { copy(other); }
 
     ~String() {
@@ -3509,6 +3511,19 @@ void String::copy(const String& other) {
 
 String::String(const char* in) {
     unsigned in_len = detail::my_strlen(in);
+    if(in_len <= last) {
+        detail::my_memcpy(buf, in, in_len + 1);
+        setLast(last - in_len);
+    } else {
+        setOnHeap();
+        data.size     = in_len;
+        data.capacity = data.size + 1;
+        data.ptr      = new char[data.capacity];
+        detail::my_memcpy(data.ptr, in, in_len + 1);
+    }
+}
+
+String::String(const char* in, size_t in_len) {
     if(in_len <= last) {
         detail::my_memcpy(buf, in, in_len + 1);
         setLast(last - in_len);
