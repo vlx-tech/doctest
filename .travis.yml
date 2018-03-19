@@ -44,6 +44,7 @@ addons:
       - llvm-toolchain-trusty-3.9
       - llvm-toolchain-trusty-4.0
       - llvm-toolchain-trusty-5.0
+      - llvm-toolchain-trusty-6.0
 
 compiler: clang
 os: linux
@@ -70,14 +71,6 @@ matrix:
       addons: &gcc44
         apt:
           packages: ["g++-4.4", "valgrind", "g++-4.4-multilib", "libc6-dbg", "libc6-dbg:i386"]
-          sources: *apt_sources
-
-    # GCC 4.5
-    - env: COMPILER=g++-4.5
-      compiler: gcc
-      addons: &gcc45
-        apt:
-          packages: ["g++-4.5", "valgrind", "g++-4.5-multilib", "libc6-dbg", "libc6-dbg:i386"]
           sources: *apt_sources
 
     # GCC 4.6
@@ -185,6 +178,13 @@ matrix:
           packages: ["clang-5.0", "valgrind", "g++-multilib", "libc6-dbg", "libc6-dbg:i386", "g++-6"]
           sources: *apt_sources
 
+    # Clang 6.0
+    - env: COMPILER=clang++-6.0 HAS_ASAN_32=true HAS_UBSAN_32=true HAS_ASAN_64=true HAS_UBSAN_64=true
+      addons: &clang60
+        apt:
+          packages: ["clang-6.0", "valgrind", "g++-multilib", "libc6-dbg", "libc6-dbg:i386", "g++-6"]
+          sources: *apt_sources
+
     # Xcode 6.4 Clang
     - env: COMPILER=clang++
       osx_image: xcode6.4
@@ -198,16 +198,6 @@ matrix:
     # Xcode 8 Clang
     - env: COMPILER=clang++ HAS_ASAN_32=true HAS_ASAN_64=true
       osx_image: xcode8
-      os: osx
-
-    # Xcode 8.1 Clang
-    - env: COMPILER=clang++ HAS_ASAN_32=true HAS_ASAN_64=true
-      osx_image: xcode8.1
-      os: osx
-
-    # Xcode 8.2 Clang
-    - env: COMPILER=clang++ HAS_ASAN_32=true HAS_ASAN_64=true
-      osx_image: xcode8.2
       os: osx
 
     # Xcode 8.3 Clang
@@ -225,22 +215,9 @@ matrix:
       osx_image: xcode9.1
       os: osx
 
-    # OSX GCC 4.6
-    - env: COMPILER=g++-4.6
-      compiler: gcc
-      osx_image: xcode6.4
-      os: osx
-
-    # OSX GCC 4.7
-    - env: COMPILER=g++-4.7
-      compiler: gcc
-      osx_image: xcode6.4
-      os: osx
-
-    # OSX GCC 4.8
-    - env: COMPILER=g++-4.8 HAS_ASAN_32=true HAS_ASAN_64=true
-      compiler: gcc
-      osx_image: xcode6.4
+    # Xcode 9.2 Clang
+    - env: COMPILER=clang++ HAS_ASAN_32=true HAS_UBSAN_32=true HAS_ASAN_64=true HAS_UBSAN_64=true
+      osx_image: xcode9.2
       os: osx
 
     # OSX GCC 4.9
@@ -274,8 +251,8 @@ matrix:
 
   allow_failures:
 
-    # GCC 4.5
-    - env: COMPILER=g++-4.5
+    # GCC 7
+    - env: COMPILER=g++-7 HAS_ASAN_32=true HAS_UBSAN_32=true HAS_ASAN_64=true HAS_UBSAN_64=true ADDITIONAL_CXX_FLAGS=" -fuse-ld=gold"
       compiler: gcc
 
     # Clang 3.7
@@ -284,11 +261,14 @@ matrix:
     # Clang 3.9
     - env: COMPILER=clang++-3.9 HAS_ASAN_64=true HAS_UBSAN_64=true
 
-    # OSX GCC 4.8
-    - env: COMPILER=g++-4.8 HAS_ASAN_32=true HAS_ASAN_64=true
-      compiler: gcc
-      osx_image: xcode6.4
-      os: osx
+    # Clang 4.0
+    - env: COMPILER=clang++-4.0 HAS_ASAN_32=true HAS_UBSAN_32=true HAS_ASAN_64=true HAS_UBSAN_64=true
+
+    # Clang 5.0
+    - env: COMPILER=clang++-5.0 HAS_ASAN_32=true HAS_UBSAN_32=true HAS_ASAN_64=true HAS_UBSAN_64=true
+
+    # Clang 6.0
+    - env: COMPILER=clang++-6.0 HAS_ASAN_32=true HAS_UBSAN_32=true HAS_ASAN_64=true HAS_UBSAN_64=true
 
     # OSX GCC 6
     - env: COMPILER=g++-6 HAS_ASAN_32=true HAS_UBSAN_32=true HAS_ASAN_64=true HAS_UBSAN_64=true

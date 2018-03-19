@@ -1,7 +1,7 @@
 //
 // doctest.h - the lightest feature-rich C++ single-header testing framework for unit tests and TDD
 //
-// Copyright (c) 2016-2017 Viktor Kirilov
+// Copyright (c) 2016-2018 Viktor Kirilov
 //
 // Distributed under the MIT Software License
 // See accompanying file LICENSE.txt or copy at
@@ -50,8 +50,8 @@
 
 #define DOCTEST_VERSION_MAJOR 1
 #define DOCTEST_VERSION_MINOR 2
-#define DOCTEST_VERSION_PATCH 6
-#define DOCTEST_VERSION_STR "1.2.6"
+#define DOCTEST_VERSION_PATCH 8
+#define DOCTEST_VERSION_STR "1.2.8"
 
 #define DOCTEST_VERSION                                                                            \
     (DOCTEST_VERSION_MAJOR * 10000 + DOCTEST_VERSION_MINOR * 100 + DOCTEST_VERSION_PATCH)
@@ -239,7 +239,8 @@ DOCTEST_MSVC_SUPPRESS_WARNING(4640) // construction of local static object is no
     DOCTEST_MSVC_SUPPRESS_WARNING(4626)                                                            \
     DOCTEST_MSVC_SUPPRESS_WARNING(5027)                                                            \
     DOCTEST_MSVC_SUPPRESS_WARNING(5026)                                                            \
-    DOCTEST_MSVC_SUPPRESS_WARNING(4623)
+    DOCTEST_MSVC_SUPPRESS_WARNING(4623)                                                            \
+    DOCTEST_MSVC_SUPPRESS_WARNING(5039)
 
 #define DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_END DOCTEST_MSVC_SUPPRESS_WARNING_POP
 
@@ -458,9 +459,11 @@ DOCTEST_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")
 #if DOCTEST_MSVC
 #define DOCTEST_NOINLINE __declspec(noinline)
 #define DOCTEST_UNUSED
+#define DOCTEST_ALIGNMENT(x)
 #else // MSVC
 #define DOCTEST_NOINLINE __attribute__((noinline))
 #define DOCTEST_UNUSED __attribute__((unused))
+#define DOCTEST_ALIGNMENT(x) __attribute__((aligned(x)))
 #endif // MSVC
 
 #ifndef DOCTEST_CONFIG_NUM_CAPTURES_ON_STACK
@@ -488,9 +491,6 @@ DOCTEST_CLANG_SUPPRESS_WARNING("-Wc++98-compat-pedantic")
 #define DOCTEST_TOSTR_IMPL(x) #x
 #define DOCTEST_TOSTR(x) DOCTEST_TOSTR_IMPL(x)
 #endif // DOCTEST_CONFIG_WITH_VARIADIC_MACROS
-
-// for concatenating literals and making the result a string
-#define DOCTEST_STR_CONCAT_TOSTR(s1, s2) DOCTEST_TOSTR(s1) DOCTEST_TOSTR(s2)
 
 // counts the number of elements in a C string
 #define DOCTEST_COUNTOF(x) (sizeof(x) / sizeof(x[0]))
@@ -1863,7 +1863,8 @@ namespace detail
 
         struct Chunk
         {
-            char buf[sizeof(Capture<char>)]; // place to construct a Capture<T>
+            char buf[sizeof(Capture<char>)] DOCTEST_ALIGNMENT(
+                    2 * sizeof(void*)); // place to construct a Capture<T>
         };
 
         struct Node

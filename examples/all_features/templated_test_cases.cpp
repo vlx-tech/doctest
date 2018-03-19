@@ -5,7 +5,7 @@ DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_BEGIN
 DOCTEST_MAKE_STD_HEADERS_CLEAN_FROM_WARNINGS_ON_WALL_END
 
 // typedefs are required if variadic macro support is not available (otherwise the commas are a problem)
-typedef doctest::Types<char, short, int> int_types;
+typedef doctest::Types<signed char, short, int> int_types;
 typedef doctest::Types<double, double> float_types; // note that types won't be filtered for uniqueness
 
 // =================================================================================================
@@ -23,7 +23,7 @@ TYPE_TO_STRING(std::vector<int>);
 
 TEST_CASE_TEMPLATE("vector stuff", T, doctest::Types<std::vector<int> >) {
     T vec(10);
-    CHECK(vec.size() == 20); // fill fail
+    CHECK(vec.size() == 20); // will fail
 }
 
 // =================================================================================================

@@ -1,9 +1,22 @@
 
+https://github.com/catchorg/Catch2/commit/de36b2ada6e4593a9a32c4c86cd47d4bc002b148
+
+add [[noreturn]] to MessageBuilder::react() - and actually make a separate function (react2) for the FAIL() case
+
+look at runtime performance stuff
+https://github.com/catchorg/Catch2/issues/1086
+
+SUCCEED();
+
 rethink static code analisys suppressions - users shouldn't have to use the same flags for code which uses doctest macros/types
 
 try to forward declare std::string and specialize the string maker for it or something like that
 
 https://github.com/philsquared/Catch/issues/980
+https://github.com/catchorg/Catch2/commit/00af677577973758b3b35e1c94ab4142c45c3f67
+https://github.com/catchorg/Catch2/commit/11f716f28d6621d1e54cf13374f8b5dd1a7489f5
+https://github.com/catchorg/Catch2/commit/22ac9d2184b3868cccfd635eb631d0eee1529121
+https://github.com/catchorg/Catch2/commit/0b1f1b10030942c38ca8c1b95140b0c65efc903e
 
 == when making a new release:
 
