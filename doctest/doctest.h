@@ -637,6 +637,8 @@ DOCTEST_INTERFACE doctest::detail::TestSuite& getCurrentTestSuite();
 
 #endif // DOCTEST_CONFIG_DISABLE
 
+#include <stddef.h>
+
 namespace doctest
 {
 // A 24 byte string class (can be as small as 17 for x64 and 13 for x86) that can hold strings with length
@@ -689,6 +691,8 @@ public:
     }
 
     String(const char* in);
+
+    String(const char* in, size_t len);
 
     String(const String& other) { copy(other); }
 
@@ -2395,7 +2399,7 @@ constexpr T to_lvalue = x;
             DOCTEST_TOSTR(DOCTEST_HANDLE_BRACED_VA_ARGS(expr)));                                   \
     DOCTEST_WRAP_IN_TRY(_DOCTEST_RB.setResult(                                                     \
             doctest::detail::ExpressionDecomposer(doctest::detail::assertType::assert_type)        \
-            << DOCTEST_HANDLE_BRACED_VA_ARGS(expr)))                                               \
+            << (DOCTEST_HANDLE_BRACED_VA_ARGS(expr))))                                             \
     DOCTEST_ASSERT_LOG_AND_REACT(_DOCTEST_RB)                                                      \
     DOCTEST_CLANG_SUPPRESS_WARNING_POP
 
@@ -3521,6 +3525,19 @@ String::String(const char* in) {
     }
 }
 
+String::String(const char* in, size_t in_len) {
+    if(in_len <= last) {
+        detail::my_memcpy(buf, in, in_len + 1);
+        setLast(last - in_len);
+    } else {
+        setOnHeap();
+        data.size     = in_len;
+        data.capacity = data.size + 1;
+        data.ptr      = new char[data.capacity];
+        detail::my_memcpy(data.ptr, in, in_len + 1);
+    }
+}
+
 String& String::operator+=(const String& other) {
     const unsigned my_old_size = size();
     const unsigned other_size  = other.size();
@@ -3852,6 +3869,7 @@ namespace detail
         return m_template_id < other.m_template_id;
     }
 
+    DOCTEST_CLANG_SUPPRESS_WARNING_WITH_PUSH("-Wswitch")
     const char* getAssertString(assertType::Enum val) {
         DOCTEST_MSVC_SUPPRESS_WARNING_WITH_PUSH(
                 4062) // enumerator 'x' in switch of enum 'y' is not handled
@@ -3928,11 +3946,12 @@ namespace detail
             case assertType::DT_FAST_WARN_UNARY_FALSE   : return "FAST_WARN_UNARY_FALSE";
             case assertType::DT_FAST_CHECK_UNARY_FALSE  : return "FAST_CHECK_UNARY_FALSE";
             case assertType::DT_FAST_REQUIRE_UNARY_FALSE: return "FAST_REQUIRE_UNARY_FALSE";
+            default                                     : return "";
                 // clang-format on
         }
         DOCTEST_MSVC_SUPPRESS_WARNING_POP
-        return "";
     }
+    DOCTEST_CLANG_SUPPRESS_WARNING_POP
 
     bool checkIfShouldThrow(assertType::Enum assert_type) {
         if(assert_type & assertType::is_require) //!OCLINT bitwise operator in conditional
