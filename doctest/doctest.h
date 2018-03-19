@@ -2400,7 +2400,7 @@ constexpr T to_lvalue = x;
             DOCTEST_TOSTR(DOCTEST_HANDLE_BRACED_VA_ARGS(expr)));                                   \
     DOCTEST_WRAP_IN_TRY(_DOCTEST_RB.setResult(                                                     \
             doctest::detail::ExpressionDecomposer(doctest::detail::assertType::assert_type)        \
-            << (DOCTEST_HANDLE_BRACED_VA_ARGS(expr))))                                             \
+            << DOCTEST_HANDLE_BRACED_VA_ARGS(expr)))                                               \
     DOCTEST_ASSERT_LOG_AND_REACT(_DOCTEST_RB)                                                      \
     DOCTEST_CLANG_SUPPRESS_WARNING_POP
 
