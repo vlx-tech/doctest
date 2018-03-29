@@ -67,17 +67,16 @@
 
 #define DOCTEST_COMPILER(MAJOR, MINOR, PATCH) ((MAJOR)*10000000 + (MINOR)*100000 + (PATCH))
 
-#if defined(_MSC_VER) && defined(_MSC_FULL_VER)
-#if _MSC_VER == _MSC_FULL_VER / 10000
-#define DOCTEST_MSVC DOCTEST_COMPILER(_MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 10000)
-#else
-#define DOCTEST_MSVC                                                                               \
-    DOCTEST_COMPILER(_MSC_VER / 100, (_MSC_FULL_VER / 100000) % 100, _MSC_FULL_VER % 100000)
-#endif
-#elif defined(__clang__) && defined(__clang_minor__)
-#define DOCTEST_CLANG DOCTEST_COMPILER(__clang_major__, __clang_minor__, __clang_patchlevel__)
+#if defined(__clang__) && defined(__clang_minor__)
+#   define DOCTEST_CLANG DOCTEST_COMPILER(__clang_major__, __clang_minor__, __clang_patchlevel__)
+#elif defined(_MSC_VER) && defined(_MSC_FULL_VER)
+#   if _MSC_VER == _MSC_FULL_VER / 10000
+#       define DOCTEST_MSVC DOCTEST_COMPILER(_MSC_VER / 100, _MSC_VER % 100, _MSC_FULL_VER % 10000)
+#   else
+#       define DOCTEST_MSVC DOCTEST_COMPILER(_MSC_VER / 100, (_MSC_FULL_VER / 100000) % 100, _MSC_FULL_VER % 100000)
+#   endif
 #elif defined(__GNUC__) && defined(__GNUC_MINOR__) && defined(__GNUC_PATCHLEVEL__)
-#define DOCTEST_GCC DOCTEST_COMPILER(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
+#   define DOCTEST_GCC DOCTEST_COMPILER(__GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__)
 #endif
 
 #ifndef DOCTEST_MSVC
@@ -539,7 +538,7 @@ extern "C" __declspec(dllimport) void __stdcall DebugBreak();
 #ifdef _LIBCPP_VERSION
 // not forward declaring ostream for libc++ because I had some problems (inline namespaces vs c++98)
 // so the <iosfwd> header is used - also it is very light and doesn't drag a ton of stuff
-#include <iosfwd>
+#include <iostream>
 #else // _LIBCPP_VERSION
 #ifndef DOCTEST_CONFIG_USE_IOSFWD
 namespace std
