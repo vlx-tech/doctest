@@ -9,3 +9,7 @@ add_compile_definitions(
     DOCTEST_CONFIG_TREAT_CHAR_STAR_AS_STRING
     USING_DOCTEST
 )
+add_subdirectory(
+    ${CMAKE_CURRENT_LIST_DIR}
+    "external/doctest"
+)
