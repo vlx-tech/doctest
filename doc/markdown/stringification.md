@@ -3,6 +3,8 @@
 **doctest** needs to be able to convert types you use in assertions and logging expressions into strings (for logging and reporting purposes).
 Most built-in types are supported out of the box but there are three ways that you can tell **doctest** how to convert your own types (or other, third-party types) into strings.
 
+For stringifying enums checkout [this issue](https://github.com/onqtam/doctest/issues/121).
+
 ## ```operator<<``` overload for ```std::ostream```
 
 This is the standard way of providing string conversions in C++ - and the chances are you may already provide this for your own purposes. If you're not familiar with this idiom it involves writing a free function of the form:
@@ -59,7 +61,7 @@ namespace doctest {
 
 ## Translating exceptions
 
-By default all exceptions deriving from ```std::exception``` will be translated to strings by calling the ```what()``` method. For exception types that do not derive from ```std::exception``` - or if ```what()``` does not return a suitable string - use ```REGISTER_EXCEPTION_TRANSLATOR```. This defines a function that takes your exception type and returns a ```doctest::String```. It can appear anywhere in the code - it doesn't have to be in the same translation unit. For example:
+By default all exceptions deriving from ```std::exception``` will be translated to strings by calling the ```what()``` method (also C strings). For exception types that do not derive from ```std::exception``` - or if ```what()``` does not return a suitable string - use ```REGISTER_EXCEPTION_TRANSLATOR```. This defines a function that takes your exception type and returns a ```doctest::String```. It can appear anywhere in the code - it doesn't have to be in the same translation unit. For example:
 
 ```c++
 REGISTER_EXCEPTION_TRANSLATOR(MyType& ex) {
@@ -87,3 +89,5 @@ The order of registering exception translators can be controlled - simply call t
 ---
 
 [Home](readme.md#reference)
+
+<p align="center"><img src="../../scripts/data/logo/icon_2.svg"></p>

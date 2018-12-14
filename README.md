@@ -1,5 +1,4 @@
-<h3>The fastest feature-rich C++98/C++11 single-header testing framework for unit tests and TDD</h3>
-
+<p align="center"><img src="scripts/data/logo/logo_1.svg"></p>
 <b>
 <table>
     <tr>
@@ -38,7 +37,7 @@
 </table>
 </b>
 
-**doctest** is a new C++ testing framework but is by far the fastest both in compile times (by [**orders of magnitude**](doc/markdown/benchmarks.md)) and runtime compared to other feature-rich alternatives. It brings the ability of compiled languages such as [**D**](https://dlang.org/spec/unittest.html) / [**Rust**](https://doc.rust-lang.org/book/testing.html) / [**Nim**](https://nim-lang.org/docs/unittest.html) to have tests written directly in the production code by providing a fast, transparent and flexible test runner with a clean interface.
+**doctest** is a new C++ testing framework but is by far the fastest both in compile times (by [**orders of magnitude**](doc/markdown/benchmarks.md)) and runtime compared to other feature-rich alternatives. It brings the ability of compiled languages such as [**D**](https://dlang.org/spec/unittest.html) / [**Rust**](https://doc.rust-lang.org/book/second-edition/ch11-00-testing.html) / [**Nim**](https://nim-lang.org/docs/unittest.html) to have tests written directly in the production code by providing a fast, transparent and flexible test runner with a clean interface.
 
 [<img src="https://cloud.githubusercontent.com/assets/8225057/5990484/70413560-a9ab-11e4-8942-1a63607c0b00.png" align="right">](http://www.patreon.com/onqtam)
 
@@ -56,8 +55,11 @@ The **key** differences between it and other testing frameworks are that it is l
 - Ultra light on compile times both in terms of [**including the header**](doc/markdown/benchmarks.md#cost-of-including-the-header) and writing [**thousands of asserts**](doc/markdown/benchmarks.md#cost-of-an-assertion-macro)
 - Doesn't produce any warnings even on the [**most aggressive**](scripts/cmake/common.cmake#L84) warning levels for **MSVC**/**GCC**/**Clang**
 - Offers a way to remove **everything** testing-related from the binary with the [**```DOCTEST_CONFIG_DISABLE```**](doc/markdown/configuration.md#doctest_config_disable) identifier
+- [**thread-safe**](doc/markdown/faq.md#is-doctest-thread-aware) - asserts (and logging) can be used from multiple threads spawned from a single test case - [**example**](examples/all_features/concurrency.cpp)
+- asserts can be used [**outside of a testing context**](doc/markdown/assertions.md#using-asserts-out-of-a-testing-context) - as a general purpose assert library - [**example**](examples/all_features/asserts_used_outside_of_tests.cpp)
 - Doesn't pollute the global namespace (everything is in namespace ```doctest```) and doesn't drag **any** headers with it
-- Very [**portable**](doc/markdown/features.md#extremely-portable) C++98 - per commit tested on CI with over 330 different builds (static analysis, sanitizers...)
+- Very [**portable**](doc/markdown/features.md#extremely-portable) C++11 (use tag [**1.2.9**](https://github.com/onqtam/doctest/tree/1.2.9) for C++98) with over 180 different CI builds (static analysis, sanitizers...)
+- binaries (exe/dll) can use the test runner of another binary - so tests end up in a single registry - [**example**](examples/executable_dll_and_plugin/)
 
 ![cost-of-including-the-framework-header](scripts/data/benchmarks/header.png)
 
@@ -76,13 +78,13 @@ The framework can be used like any other if you don't want/need to mix productio
 
 [This table](https://github.com/martinmoene/catch-lest-other-comparison) compares **doctest** / [**Catch**](https://github.com/philsquared/Catch) / [**lest**](https://github.com/martinmoene/lest) which are all very similar.
 
-[![Standard](https://img.shields.io/badge/c%2B%2B-98/11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
+[![Standard](https://img.shields.io/badge/c%2B%2B-11/14/17-blue.svg)](https://en.wikipedia.org/wiki/C%2B%2B#Standardization)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Version](https://badge.fury.io/gh/onqtam%2Fdoctest.svg)](https://github.com/onqtam/doctest/releases)
 [![download](https://img.shields.io/badge/download%20%20-latest-blue.svg)](https://raw.githubusercontent.com/onqtam/doctest/master/doctest/doctest.h)
 [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/503/badge)](https://bestpractices.coreinfrastructure.org/projects/503)
 [![Join the chat at https://gitter.im/onqtam/doctest](https://badges.gitter.im/onqtam/doctest.svg)](https://gitter.im/onqtam/doctest?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Try it online](https://img.shields.io/badge/try%20it-online-orange.svg)](https://wandbox.org/permlink/cuvJ2XfsChtgIYyk)
+[![Try it online](https://img.shields.io/badge/try%20it-online-orange.svg)](https://wandbox.org/permlink/WpIiohiJKefTZnRI)
 <!--
 [![Language](https://img.shields.io/badge/language-C++-blue.svg)](https://isocpp.org/)
 [![documentation](https://img.shields.io/badge/documentation%20%20-online-blue.svg)](https://github.com/onqtam/doctest/blob/master/doc/markdown/readme.md#reference)
@@ -114,6 +116,7 @@ Usage:
 - [```main()``` entry point](doc/markdown/main.md)
 - [Configuration](doc/markdown/configuration.md)
 - [String conversions](doc/markdown/stringification.md)
+- [Reporters](doc/markdown/reporters.md)
 - [FAQ](doc/markdown/faq.md)
 - [Build systems](doc/markdown/build-systems.md)
 - [Examples](examples)
@@ -131,25 +134,9 @@ If you work for a company using **doctest** or have the means to do so, please c
 
 Contributions in the form of issues and pull requests are welcome as well - check out the [**Contributing**](CONTRIBUTING.md) page.
 
+Logo
+------------
 
-Sponsors
---------
+The [logo](scripts/data/logo) is licensed under a Creative Commons Attribution 4.0 International License. Copyright &copy; 2018 [area55git](https://github.com/area55git) &nbsp; [![License: CC BY 4.0](https://licensebuttons.net/l/by/4.0/80x15.png)](https://creativecommons.org/licenses/by/4.0/)
 
-Want to see your name or the name of your company here? Consider donating!
-
-### :zap: Rockstar sponsors :zap:
-
-### :gem: Gold sponsors :gem:
-
-- Pascal Thomet
-- Mario Kostadinov
-
-### :cake: Silver sponsors :cake:
-
-- Aras Pranckevicius
-- Dan Nissenbaum
-
-### :hamburger: Bronze sponsors :hamburger:
-
-- Sebastien Feldis
-- Zahari Karadzhov
+<p align="center"><img src="scripts/data/logo/icon_2.svg"></p>

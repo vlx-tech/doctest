@@ -1,12 +1,92 @@
 # Change Log
 
+## [2.2.0](https://github.com/onqtam/doctest/tree/2.2.0) (2018-12-05)
+[Full Changelog](https://github.com/onqtam/doctest/compare/2.1.0...2.2.0)
+
+**Closed issues:**
+
+- remove the FAST\_ versions of the binary asserts \(not a breaking change!\) [\#167](https://github.com/onqtam/doctest/issues/167)
+- \[compile times\] make the DOCTEST\_CONFIG\_SUPER\_FAST\_ASSERTS identifier affect normal asserts too [\#166](https://github.com/onqtam/doctest/issues/166)
+
+## [2.1.0](https://github.com/onqtam/doctest/tree/2.1.0) (2018-11-30)
+[Full Changelog](https://github.com/onqtam/doctest/compare/2.0.1...2.1.0)
+
+**Closed issues:**
+
+- doctest::String ctor with non-zero terminated string [\#165](https://github.com/onqtam/doctest/issues/165)
+- thread\_local is not supported on iOS 9.0 [\#164](https://github.com/onqtam/doctest/issues/164)
+- Compiler error on Android NDK r18 [\#163](https://github.com/onqtam/doctest/issues/163)
+- \[question\] One setup for multiple tests [\#160](https://github.com/onqtam/doctest/issues/160)
+- clang unwanted warning in user code [\#156](https://github.com/onqtam/doctest/issues/156)
+- Unsigned integer overflow in fileOrderComparator [\#151](https://github.com/onqtam/doctest/issues/151)
+- ThreadSanitizer: signal-unsafe call inside of a signal [\#147](https://github.com/onqtam/doctest/issues/147)
+- Feature request: check for exception string \(like Catch's CHECK\_THROWS\_WITH\) [\#97](https://github.com/onqtam/doctest/issues/97)
+
+**Merged pull requests:**
+
+- Fixed build error under Android NDK [\#162](https://github.com/onqtam/doctest/pull/162) ([tals](https://github.com/tals))
+- Added clang-7 to travis build [\#161](https://github.com/onqtam/doctest/pull/161) ([AMS21](https://github.com/AMS21))
+- Remove clang-tidy warnings for static fields created by doctest [\#159](https://github.com/onqtam/doctest/pull/159) ([rantasub](https://github.com/rantasub))
+- Make it possible to change the command line options prefix [\#158](https://github.com/onqtam/doctest/pull/158) ([tbleher](https://github.com/tbleher))
+
+## [2.0.1](https://github.com/onqtam/doctest/tree/2.0.1) (2018-10-24)
+[Full Changelog](https://github.com/onqtam/doctest/compare/2.0.0...2.0.1)
+
+**Closed issues:**
+
+- macro name collision with google log [\#157](https://github.com/onqtam/doctest/issues/157)
+- Add \#define to not run tests by default [\#152](https://github.com/onqtam/doctest/issues/152)
+- REQUIRE\_THROWS\_MESSAGE not checking message correctly [\#150](https://github.com/onqtam/doctest/issues/150)
+- Test case passes even though subcase failed [\#149](https://github.com/onqtam/doctest/issues/149)
+
+**Merged pull requests:**
+
+- Correctly document when a main\(\) entry point will be created [\#155](https://github.com/onqtam/doctest/pull/155) ([tbleher](https://github.com/tbleher))
+- Correct format string for unsigned char [\#154](https://github.com/onqtam/doctest/pull/154) ([tbleher](https://github.com/tbleher))
+
+## [2.0.0](https://github.com/onqtam/doctest/tree/2.0.0) (2018-08-23)
+[Full Changelog](https://github.com/onqtam/doctest/compare/1.2.9...2.0.0)
+
+**Closed issues:**
+
+- MSVC 2017 15.8.1, New Warnings as Errors [\#144](https://github.com/onqtam/doctest/issues/144)
+- Windows clang-cl Wdeprecated-declarations warnings [\#143](https://github.com/onqtam/doctest/issues/143)
+- Logo Proposal for Doctest [\#141](https://github.com/onqtam/doctest/issues/141)
+- PCH Support [\#140](https://github.com/onqtam/doctest/issues/140)
+- improve compile times even further [\#139](https://github.com/onqtam/doctest/issues/139)
+- !!! BREAKING CHANGE !!! - Move to C++11 for next version of the library [\#137](https://github.com/onqtam/doctest/issues/137)
+- getCurrentTicks producing warning on MinGW [\#133](https://github.com/onqtam/doctest/issues/133)
+- \[enhancement\] Add support for "stand-alone assertions". [\#114](https://github.com/onqtam/doctest/issues/114)
+
+**Merged pull requests:**
+
+- Suppress compiler warning on MinGW [\#134](https://github.com/onqtam/doctest/pull/134) ([AMS21](https://github.com/AMS21))
+
+## [1.2.9](https://github.com/onqtam/doctest/tree/1.2.9) (2018-05-10)
+[Full Changelog](https://github.com/onqtam/doctest/compare/1.2.8...1.2.9)
+
+**Closed issues:**
+
+- GCC 8.0 std::uncaught\_exception\(\) is deprecated  [\#130](https://github.com/onqtam/doctest/issues/130)
+- Signal stack size too small on Linux [\#129](https://github.com/onqtam/doctest/issues/129)
+- Support Intel Compiler [\#128](https://github.com/onqtam/doctest/issues/128)
+- Please add support for MSVC 2005 [\#127](https://github.com/onqtam/doctest/issues/127)
+- Doctest is not able to compile on OSX [\#126](https://github.com/onqtam/doctest/issues/126)
+- scan-build report "Dereference of null pointer" for function wildcmp [\#124](https://github.com/onqtam/doctest/issues/124)
+- !!! BREAKING CHANGE \(console output only\)  !!! - Emulate the error/warning format emitted by native compiler gcc/clang/msvc when printing test failures in the log [\#123](https://github.com/onqtam/doctest/issues/123)
+- ARM builds: FTBFS on armhf - error: cast from 'const char\*' to 'const  [\#118](https://github.com/onqtam/doctest/issues/118)
+
+**Merged pull requests:**
+
+- Exclude Intel from GCC compiler check [\#132](https://github.com/onqtam/doctest/pull/132) ([smcallis](https://github.com/smcallis))
+- Fix deprecated-declarations warning with GCC-8.0 [\#131](https://github.com/onqtam/doctest/pull/131) ([AMS21](https://github.com/AMS21))
+
 ## [1.2.8](https://github.com/onqtam/doctest/tree/1.2.8) (2018-03-10)
 [Full Changelog](https://github.com/onqtam/doctest/compare/1.2.7...1.2.8)
 
 **Closed issues:**
 
 - ARM64 builds: templated\_test\_cases.cpp test fails [\#119](https://github.com/onqtam/doctest/issues/119)
-- ARM builds: FTBFS on armhf - error: cast from 'const char\*' to 'const  [\#118](https://github.com/onqtam/doctest/issues/118)
 
 ## [1.2.7](https://github.com/onqtam/doctest/tree/1.2.7) (2018-02-06)
 [Full Changelog](https://github.com/onqtam/doctest/compare/1.2.6...1.2.7)
@@ -115,7 +195,7 @@
 - \[question\] Is there a way to always have 0 as the exit code regardless of test results? [\#59](https://github.com/onqtam/doctest/issues/59)
 - Add support for un-parenthesized expressions containing commas in asserts [\#58](https://github.com/onqtam/doctest/issues/58)
 - Add ability to filter subcases with filters [\#57](https://github.com/onqtam/doctest/issues/57)
-- Add option to query if code is being ran inside of a test - doctest::isRunningInTest\(\) [\#56](https://github.com/onqtam/doctest/issues/56)
+- Add option to query if code is being ran inside of a test - doctest::is\_running\_in\_test [\#56](https://github.com/onqtam/doctest/issues/56)
 - Ability for a binary \(executable / shared object\) to use the test runner implementation of another binary - with exported symbols - so tests end up in a single registry [\#55](https://github.com/onqtam/doctest/issues/55)
 - How to force the use of colors in the terminal? [\#54](https://github.com/onqtam/doctest/issues/54)
 - How can I mix production code with the Unit Tests? [\#53](https://github.com/onqtam/doctest/issues/53)

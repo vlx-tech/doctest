@@ -1,7 +1,8 @@
-#!/usr/bin/python2.7
+#!/usr/bin/python3
 
 import os
 import sys
+if sys.version_info[0] < 3: raise Exception("Python 3 or a more recent version is required.")
 import pprint
 import argparse
 import urllib
@@ -22,7 +23,7 @@ def addCommonFlags(parser):
     parser.add_argument("--files",      type=int, default=1,    help = "number of source files (besides the implementation)")
     parser.add_argument("--tests",      type=int, default=1,    help = "number of test cases per source file")
     parser.add_argument("--checks",     type=int, default=1,    help = "number of asserts per test case")
-    parser.add_argument("--asserts",    choices=['normal', 'binary', 'fast'], default="normal",
+    parser.add_argument("--asserts",    choices=['normal', 'binary'], default="normal",
                                                                 help = "<doctest> type of assert used - Catch: only normal")
 
 parser = argparse.ArgumentParser()
@@ -51,12 +52,12 @@ pprint.pprint(vars(args), width = 1)
 # ==============================================================================
 
 # catch version
-catch_ver = "2.0.0-develop.3"
+catch_ver = "2.3.0"
 catch_header = "catch." + catch_ver + ".hpp"
 
 # get the catch header
 if not os.path.exists("catch." + catch_ver + ".hpp"):
-    urllib.urlretrieve ("https://raw.githubusercontent.com/philsquared/Catch/v" + catch_ver + "/single_include/catch.hpp", catch_header)
+    urllib.urlretrieve("https://github.com/catchorg/Catch2/releases/download/v" + catch_ver + "/catch.hpp", catch_header)
 
 # folder with generated code
 the_folder = 'project'
@@ -100,8 +101,6 @@ if args.runtime:
     macro = "    CHECK(i == i);\n"
 if not args.catch and args.asserts == "binary":
     macro = "    CHECK_EQ(a, b);\n"
-if not args.catch and args.asserts == "fast":
-    macro = "    FAST_CHECK_EQ(a, b);\n"
 
 # setup the header used
 include = '#include "doctest.h"\n'

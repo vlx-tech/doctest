@@ -72,7 +72,7 @@ Although this was a simple test it's been enough to demonstrate a few things abo
 1. All we did was ```#define``` one identifier and ```#include``` one header and we got everything - even an implementation of ```main()``` that will respond to command line arguments. You can only use that ```#define``` in one source file for (hopefully) obvious reasons. Once you have more than one file with unit tests in you'll just ```#include "doctest.h"``` and go. Usually it's a good idea to have a dedicated implementation file that just has ```#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN``` and ```#include "doctest.h"```. You can also provide your own implementation of main and drive **doctest** yourself - see [**supplying your own ```main()```**](main.md).
 2. We introduce test cases with the ```TEST_CASE``` macro. It takes one argument - a free form test name (for more see [**Test cases and subcases**](testcases.md)). The test name doesn't have to be unique. You can run sets of tests by specifying a wildcarded test name or a tag expression. See the [**command line**](commandline.md) docs for more information on running tests.
 3. The name is just a string. We haven't had to declare a function or method - or explicitly register the test case anywhere. Behind the scenes a function with a generated name is defined for you and automatically registered using static registry classes. By abstracting the function name away we can name our tests without the constraints of identifier names.
-4. We write our individual test assertions using the ```CHECK()``` macro. Rather than a separate macro for each type of condition (equal, less than, greater than, etc.) we express the condition naturally using C++ syntax. Behind the scenes a simple expression template captures the left-hand-side and right-hand-side of the expression so we can display the values in our test report. There are other [**assertion macros**](assertions.md) not covered in this tutorial - but because of this technique the number of them is  drastically reduced.
+4. We write our individual test assertions using the ```CHECK()``` macro. Rather than a separate macro for each type of condition (equal, less than, greater than, etc.) we express the condition naturally using C++ syntax. Behind the scenes a simple expression template captures the left-hand-side and right-hand-side of the expression so we can display the values in our test report. There are other [**assertion macros**](assertions.md) not covered in this tutorial - but because of this technique the number of them is drastically reduced.
 
 ## Test cases and subcases
 
@@ -175,6 +175,8 @@ root
 
 Subcases can be nested to an arbitrary depth (limited only by your stack size). Each leaf subcase (a subcase that contains no nested subcases) will be executed exactly once on a separate path of execution from any other leaf subcase (so no leaf subcase can interfere with another). A fatal failure in a parent subcase will prevent nested subcases from running - but then that's the idea.
 
+Keep in mind that even though **doctest** is [**thread-safe**](faq.md#is-doctest-thread-aware) - using subcases has to be done only in the main test runner thread.
+
 ## Scaling up
 
 To keep the tutorial simple we put all our code in a single file. This is fine to get started - and makes jumping into **doctest** even quicker and easier. This is not really the best approach when you start writing more real-world tests.
@@ -199,3 +201,5 @@ Of course there is more to learn - see the ever-growing [**reference**](readme.m
 ---------------
 
 [Home](readme.md#reference)
+
+<p align="center"><img src="../../scripts/data/logo/icon_2.svg"></p>

@@ -12,6 +12,8 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 enable_testing()
 
+find_package(Threads)
+
 set(DOCTEST_TEST_MODE "COMPARE" CACHE STRING "Test mode - normal/run through valgrind/collect output/compare with output")
 set_property(CACHE DOCTEST_TEST_MODE PROPERTY STRINGS "NORMAL;VALGRIND;COLLECT;COMPARE")
 
@@ -39,6 +41,8 @@ function(doctest_add_test)
     set(the_command "${the_command} --dt-no-line-numbers=1")
     # append the argument for ignoring the exit code of the test programs because some are intended to have failing tests
     set(the_command "${the_command} --dt-no-exitcode=1")
+    # append the argument for using the same line format in the output - so gcc/non-gcc builds have the same output
+    set(the_command "${the_command} --dt-gnu-file-line=0")
     
     string(STRIP ${the_command} the_command)
     
@@ -59,6 +63,7 @@ endfunction()
 function(doctest_add_executable name)
     add_executable(${name} ${ARGN})
     add_dependencies(${name} assemble_single_header)
+    target_link_libraries(${name} ${CMAKE_THREAD_LIBS_INIT})
 endfunction()
 
 function(doctest_add_library name)
@@ -137,12 +142,19 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU")
         add_compiler_flags(-Walloc-zero)
         add_compiler_flags(-Walloca)
         add_compiler_flags(-Wduplicated-branches)
-        add_compiler_flags(-Wrestrict)
+    endif()
+    
+    if(NOT CMAKE_CXX_COMPILER_VERSION VERSION_LESS 8.0)
+        add_compiler_flags(-Wcast-align=strict)
     endif()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     add_compiler_flags(-Weverything)
+    add_compiler_flags(-Wno-c++98-compat)
+    add_compiler_flags(-Wno-c++98-compat-pedantic)
+    add_compiler_flags(-Wno-c++98-compat-bind-to-temporary-copy)
+    add_compiler_flags(-Wno-c++98-compat-local-type-template-args)
     add_compiler_flags(-Qunused-arguments -fcolor-diagnostics) # needed for ccache integration on travis
 endif()
 

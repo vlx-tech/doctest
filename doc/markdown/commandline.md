@@ -20,6 +20,7 @@ All the options can also be set with code (defaults/overrides) if the user [**su
 | ```-c``` &nbsp;&nbsp;&nbsp; ```--count``` | Prints the number of test cases matching the current filters (see below) |
 | ```-ltc``` ```--list-test-cases``` | Lists all test cases by name which match the current filters (see below) |
 | ```-lts``` ```--list-test-suites``` | Lists all test suites by name which have at least one test case matching the current filters (see below) |
+| ```-lr``` ```--list-reporters``` | Lists all registered [**reporters**](reporters.md) |
 | **Int/String Options** | <hr> |
 | ```-tc``` &nbsp; ```--test-case=<filters>``` | Filters test cases based on their name. By default all test cases match but if a value is given to this filter like ```--test-case=*math*,*sound*``` then only test cases who match atleast one of the patterns in the comma-separated list with wildcards will get executed/counted/listed |
 | ```-tce``` ```--test-case-exclude=<filters>``` | Same as the ```-test-case=<filters>``` option but if any of the patterns in the comma-separated list of values matches - then the test case is skipped |
@@ -29,6 +30,7 @@ All the options can also be set with code (defaults/overrides) if the user [**su
 | ```-tse``` ```--test-suite-exclude=<filters>``` | Same as ```--test-case-exclude=<filters>``` but filters based on the test suite in which test cases are in |
 | ```-sc``` &nbsp; ```--subcase=<filters>``` | Same as ```--test-case=<filters>``` but filters subcases based on their names |
 | ```-sce``` ```--subcase-exclude=<filters>``` | Same as ```--test-case-exclude=<filters>``` but filters based on subcase names |
+| ```-r``` ```--reporters=<filters>``` | List of [**reporters**](reporters.md) to use (default is ```console```) |
 | ```-ob``` &nbsp; ```--order-by=<string>``` | Test cases will be sorted before being executed either by **the file in which they are** / **the test suite they are in** / **their name** / **random**. The possible values of ```<string>``` are ```file```/```suite```/```name```/```rand```. The default is ```file``` |
 | ```-rs``` &nbsp; ```--rand-seed=<int>``` | The seed for random ordering |
 | ```-f``` &nbsp;&nbsp;&nbsp; ```--first=<int>``` | The **first** test case to execute which passes the current filters - for range-based execution - see [**the example python script**](../../examples/range_based_execution.py) |
@@ -48,17 +50,20 @@ All the options can also be set with code (defaults/overrides) if the user [**su
 | ```-fc``` &nbsp; ```--force-colors=<bool>``` | Forces the use of colors even when a tty cannot be detected |
 | ```-nb``` &nbsp; ```--no-breaks=<bool>``` | Disables breakpoints in debuggers when an assertion fails |
 | ```-ns``` &nbsp; ```--no-skip=<bool>``` | Don't skip test cases marked as skip with a decorator |
+| ```-gfl``` ```--gnu-file-line=<bool>``` | ```:n:``` vs ```(n):``` for line numbers in output (gnu mode is usually for linux tools/IDEs and is with the ```:``` separator) |
 | ```-npf``` ```--no-path-filenames=<bool>``` | Paths are removed from the output when a filename is printed - useful if you want the same output from the testing framework on different environments |
 | ```-nln``` ```--no-line-numbers=<bool>``` | Line numbers are replaced with ```0``` in the output when a source location is printed - useful if you want the same output from the testing framework even when test positions change within a source file |
 | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| |
 
-All the flags/options also come with a prefixed version (with ```--dt-``` at the front) - for example ```--version``` can be used also with ```--dt-version``` or ```--dt-v```.
+All the flags/options also come with a prefixed version (with ```--dt-``` at the front by default) - for example ```--version``` can be used also with ```--dt-version``` or ```--dt-v```.
+
+The default prefix is ```--dt-```, but this can be changed by setting the [**```DOCTEST_CONFIG_OPTIONS_PREFIX```**](configuration.md#doctest_config_options_prefix) define.
 
 All the unprefixed versions listed here can be disabled with the [**```DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS```**](configuration.md#doctest_config_no_unprefixed_options) define.
 
 This is done for easy interoperability with client command line option handling when the testing framework is integrated within a client codebase - all **doctest** related flags/options can be prefixed so there are no clashes and so that the user can exclude everything starting with ```--dt-``` from their option parsing.
 
-If there isn't an option to exclude everything starting with ```--dt-``` then the ```dt_removed``` helper class might help to filter them out:
+If there isn't an option to exclude those starting with ```--dt-``` then the ```dt_removed``` helper class might help to filter them out:
 
 ```c++
 #define DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS
@@ -119,3 +124,5 @@ Program: 2 arguments received:
 ---------------
 
 [Home](readme.md#reference)
+
+<p align="center"><img src="../../scripts/data/logo/icon_2.svg"></p>

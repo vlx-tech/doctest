@@ -1,6 +1,6 @@
 ## Logging macros
 
-Additional messages can be logged during a test case.
+Additional messages can be logged during a test case (safely even in [**concurrent threads**](faq.md#is-doctest-thread-aware)).
 
 ## INFO()
 
@@ -83,3 +83,5 @@ They can be useful when integrating asserts from a different framework with doct
 ---
 
 [Home](readme.md#reference)
+
+<p align="center"><img src="../../scripts/data/logo/icon_2.svg"></p>

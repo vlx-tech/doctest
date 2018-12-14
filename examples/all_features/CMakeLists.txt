@@ -10,11 +10,10 @@ include_directories(../../doctest/)
 ## BUILD ALL EXAMPLE SOURCES INTO A SINGLE BINARY AND EXECUTE TESTS ON EACH FILE
 ################################################################################
 
-set(files
+set(files_with_output
     main.cpp
     doctest_proxy.h
     header.h
-    coverage_maxout.cpp
     alternative_macros.cpp
     assertion_macros.cpp
     stringification.cpp
@@ -22,21 +21,40 @@ set(files
     logging.cpp
     templated_test_cases.cpp
     test_cases_and_suites.cpp
+    asserts_used_outside_of_tests.cpp
 )
 
-doctest_add_executable(${PROJECT_NAME} ${files})
+set(files_all
+    ${files_with_output}
+    concurrency.cpp
+    ../../scripts/coverage_maxout.cpp
+)
+
+# add the executable
+doctest_add_executable(${PROJECT_NAME} ${files_all})
+
 # easy way to fix test coverage - disable colors and crash handling
 target_compile_definitions(${PROJECT_NAME} PRIVATE
     DOCTEST_CONFIG_COLORS_NONE
     DOCTEST_CONFIG_NO_POSIX_SIGNALS
     DOCTEST_CONFIG_NO_WINDOWS_SEH)
 
-set(common_args COMMAND $<TARGET_FILE:${PROJECT_NAME}> --no-skipped-summary --no-version)
+# omit the version and the num test cases skipped from the summary - this way the output will change less often
+set(common_args COMMAND $<TARGET_FILE:${PROJECT_NAME}> --no-skipped-summary --no-version --reporters=console)
 
 # add per-file tests
-foreach(f ${files})
+foreach(f ${files_with_output})
     doctest_add_test(NAME ${f} ${common_args} -sf=*${f})
 endforeach()
+
+# add this separately since it shouldn't have output compared to reference output - due to concurrency
+# not adding it for MinGW since it crashes when using mingw-w64-x86_64-8.1.0-release-posix-seh-rt_v6-rev0
+if(NOT MINGW)
+    doctest_add_test(NO_OUTPUT NAME concurrency.cpp ${common_args} -sf=*concurrency.cpp)
+endif()
+
+# add this separately since the file has a non-straightforward path
+doctest_add_test(NAME coverage_maxout.cpp ${common_args} -sf=*coverage_maxout.cpp)
 
 # queries
 doctest_add_test(NAME version           COMMAND $<TARGET_FILE:${PROJECT_NAME}> -v)
@@ -44,6 +62,7 @@ doctest_add_test(NAME help              ${common_args} -h)
 doctest_add_test(NAME count             ${common_args} -c   -sf=*coverage*)
 doctest_add_test(NAME list_test_cases   ${common_args} -ltc -sf=*coverage*)
 doctest_add_test(NAME list_test_suites  ${common_args} -lts -sf=*coverage*)
+doctest_add_test(NAME list_reporters    ${common_args} -lr  -sf=*coverage*)
 
 # options
 doctest_add_test(NAME all_binary  ${common_args} -tc=all?binary* -s) # print all binary asserts - for getAssertString()
@@ -64,7 +83,7 @@ if(DEFINED ENV{CODE_COVERAGE})
     return() # do not continue with the disabled example
 endif()
 
-doctest_add_executable(disabled ${files})
+doctest_add_executable(disabled ${files_all})
 target_compile_definitions(disabled PRIVATE DOCTEST_CONFIG_DISABLE)
 
 doctest_add_test(NAME disabled COMMAND $<TARGET_FILE:disabled>)

@@ -1,14 +1,15 @@
 
+rope-ish startup of doctest - and filter duplicates on run()
+
+https://blog.travis-ci.com/2018-10-11-windows-early-release
+
+add in the faq about the compile errors with stream<<"array" - nikola goranov, also moving to catch undef/define stuffs - use vararg macro, also make the "moving from catch to doctest" easier to find, also this: https://stackoverflow.com/questions/35530850/how-to-require-a-semicolon-after-a-macro/52122660#52122660
+
+
+
+fix discoverability of subcases - wtf??? don't remember what I meant with this...
+
 https://github.com/catchorg/Catch2/commit/de36b2ada6e4593a9a32c4c86cd47d4bc002b148
-
-add [[noreturn]] to MessageBuilder::react() - and actually make a separate function (react2) for the FAIL() case
-
-look at runtime performance stuff
-https://github.com/catchorg/Catch2/issues/1086
-
-SUCCEED();
-
-rethink static code analisys suppressions - users shouldn't have to use the same flags for code which uses doctest macros/types
 
 try to forward declare std::string and specialize the string maker for it or something like that
 
@@ -29,7 +30,10 @@ reddit.com/r/cplusplus
 https://www.linkedin.com/groups/86782/profile
 twitter
 
+on big releases: update benchmarks, number of CI builds, differences with Catch, docs, etc.
 
+also check if anything should be added here:
+https://github.com/martinmoene/catch-lest-other-comparison
 
 == how to deal with pull requests for the main branch instead of the dev branch
 - http://stackoverflow.com/questions/9135913/merge-pull-request-to-a-different-branch-than-default-in-github
@@ -42,6 +46,7 @@ twitter
     - https://github.com/philsquared/Catch/issues/872
     - https://github.com/philsquared/Catch/pull/877
     - https://github.com/philsquared/Catch/issues/880
+    - https://github.com/catchorg/Catch2/pull/1405
 - toString trouble - https://github.com/philsquared/Catch/issues/741
 - https://github.com/philsquared/Catch/commit/33ed1773f40b406dbf3b7201bf52694bd86b1503
 

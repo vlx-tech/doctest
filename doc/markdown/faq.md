@@ -16,22 +16,25 @@
 
 Pros of **doctest**:
 
+- **doctest** is [**thread-safe**](faq.md#is-doctest-thread-aware)
+- asserts can be used [**outside of a testing context**](assertions.md#using-asserts-out-of-a-testing-context)
 - including the **doctest** header is [**over 20 times lighter**](benchmarks.md#cost-of-including-the-header) on compile times than that of [**Catch**](https://github.com/philsquared/Catch)
 - the asserts in **doctest** can be [**many times lighter**](benchmarks.md#cost-of-an-assertion-macro) on compile times than those of [**Catch**](https://github.com/philsquared/Catch)
 - **doctest** executes tests [**many times faster**](benchmarks.md#runtime-benchmarks) than [**Catch**](https://github.com/philsquared/Catch)
 - everything testing-related can be removed from the binary by defining the [**```DOCTEST_CONFIG_DISABLE```**](configuration.md#doctest_config_disable) identifier
 - doesn't drag any headers when included (except for in the translation unit where the library gets implemented)
 - 0 warnings even on the [**most aggressive**](../../scripts/cmake/common.cmake#L84) warning levels for MSVC/GCC/Clang
-- per commit tested with 300+ builds on [**much more compilers**](features.md#extremely-portable) - and through valgrind/sanitizers/analyzers
+- per commit tested with 180+ builds on [**much more compilers**](features.md#extremely-portable) - and through valgrind/sanitizers/analyzers
 - test cases can be written in headers - the framework will still register the tests only once - no duplicates
+- binaries (exe/dll) can use the test runner of another binary - so tests end up in a single registry - [**example**](../../examples/executable_dll_and_plugin/)
 
-Aside from everything mentioned so far doctest has some [**features**](features.md#other-features) (like [**templated test cases**](parameterized-tests.md#templated-test-cases---parameterized-by-type)) which [**Catch**](https://github.com/philsquared/Catch) doesn't.
+Aside from everything mentioned so far doctest has some [**features**](features.md#other-features) (like [**test suites**](testcases.md#test-suites) and [**decorators**](testcases.md#decorators)) which [**Catch**](https://github.com/philsquared/Catch) doesn't.
 
 Missing stuff:
 
-- a reporter/listener system - to a file, to xml, ability for the user to write their own reporter, etc.
+- xml reporter
 - matchers and generators
-- other stuff
+- other small stuff
 
 But these things (and more!) are planned in the [**roadmap**](roadmap.md)!
 
@@ -44,33 +47,32 @@ A quick and easy way to migrate most of your Catch tests to doctest is to change
 ```c++
 #include "path/to/doctest.h"
 
-#undef TEST_CASE
-#define TEST_CASE(name, tags) DOCTEST_TEST_CASE(tags " " name) // will concatenate the tags and test name string literals to one
 #define SECTION(name) DOCTEST_SUBCASE(name)
-using doctest::Approx; // catch exposes this by default outside of its namespace
 
+// only if tags are used: will concatenate them to the test name string literal
+#undef TEST_CASE
+#define TEST_CASE(name, tags) DOCTEST_TEST_CASE(tags " " name)
+
+// catch exposes this by default outside of its namespace
+using doctest::Approx;
 ```
 
 ### How to get the best compile-time performance with the framework?
 
-Using the [**fast**](assertions.md#fast-asserts) asserts in combination with [**```DOCTEST_CONFIG_SUPER_FAST_ASSERTS```**](configuration.md#doctest_config_super_fast_asserts) yelds the [**fastest**](benchmarks.md#cost-of-an-assertion-macro) compile times.
+The [**```DOCTEST_CONFIG_SUPER_FAST_ASSERTS```**](configuration.md#doctest_config_super_fast_asserts) config option yelds the [**fastest possible**](benchmarks.md#cost-of-an-assertion-macro) compile times (up to 31-91%). Also the expression-decomposing template machinery can be skipped by using the [**binary**](assertions.md#binary-and-unary-asserts) asserts.
 
-There are only 2 drawbacks of this approach:
+There are only 2 tiny drawbacks of using this config option:
 
-- using fast asserts (60-90% [**faster**](benchmarks.md#cost-of-an-assertion-macro) than ```CHECK(a==b)```) means that there is no ```try/catch``` block in each assert so if an expression throws the whole test case ends.
-- defining the [**```DOCTEST_CONFIG_SUPER_FAST_ASSERTS```**](configuration.md#doctest_config_super_fast_asserts) config identifier will result in even [**faster**](benchmarks.md#cost-of-an-assertion-macro) fast asserts (50-80%) at the cost of only one thing: when an assert fails and a debugger is present - the framework will break inside a doctest function so the user will have to go 1 level up in the callstack to see where the actual assert is in the source code.
+- there is no ```try/catch``` block in each assert so if an expression is thrown the whole test case ends (but is still caught and reported).
+- when an assert fails and a debugger is present - the framework will break inside a doctest function so the user will have to go 1 level up in the callstack to see where the actual assert is in the source code.
 
-These 2 things can be considered negligible if you are dealing mainly with arithmetic (expressions are unlikely to throw exceptions) and all the tests usually pass (you don't need to often navigate to a failing assert with a debugger attached)
-
-If you want better aliases for the asserts instead of the long ones you could use [**```DOCTEST_CONFIG_NO_SHORT_MACRO_NAMES```**](configuration.md#doctest_config_no_short_macro_names) and then define your aliases like this: ```#define CHECK_EQ DOCTEST_FAST_CHECK_EQ``` (example in [**here**](../../examples/all_features/alternative_macros.cpp)).
+These 2 things can be considered negligible and totally worth it if you are dealing mainly with expressions unlikely to throw exceptions and all the tests usually pass (you don't need to navigate often to a failing assert with a debugger attached).
 
 ### Is doctest thread-aware?
 
-Currently no. Asserts cannot be used in multiple threads and test cases cannot be ran in parallel. These are long-term features that are planned on the [**roadmap**](roadmap.md).
+Most macros/functionality is safe to use in a multithreaded context: [**assertion**](assertions.md) and [**logging**](logging.md) macros can be safely used from multiple threads spawned from a single test case. This however does not mean that multiple test cases can be ran in parallel - test cases are still ran serially. [**Subcases**](tutorial.md#test-cases-and-subcases) should also be used only from the test runner thread - not following these instructions will lead to crashes (example in [**here**](../../examples/all_features/concurrency.cpp)). Also note that logged context in one thread will not be used/printed when asserts from another thread fail - logged context is thread-local.
 
-For now tests are ran serially and doing asserts in multiple user threads will lead to crashes.
-
-There is an option to run a [**range**](commandline.md) of tests from an executable - so  ran in parallel with multiple process invocations - see [**the example python script**](../../examples/range_based_execution.py).
+There is also an option to run a [**range**](commandline.md) of tests from an executable - so tests can be ran in parallel by invoking the process multiple times with different ranges - see [**the example python script**](../../examples/range_based_execution.py).
 
 ### Is mocking supported?
 
@@ -148,3 +150,5 @@ Aren't they evil and not *modern*? - Check out the answer Phil Nash gives to thi
 ---------------
 
 [Home](readme.md#reference)
+
+<p align="center"><img src="../../scripts/data/logo/icon_2.svg"></p>

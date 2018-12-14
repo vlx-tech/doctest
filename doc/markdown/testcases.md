@@ -1,8 +1,6 @@
 ## Test cases
 
-While **doctest** fully supports the traditional, xUnit, style of class-based fixtures containing test case methods this is not the preferred style.
-
-Instead **doctest** provides a powerful mechanism for nesting subcases within a test case. For a more detailed discussion see the [**tutorial**](tutorial.md#test-cases-and-subcases).
+While **doctest** fully supports the traditional, xUnit, style of class-based fixtures containing test case methods this is not the preferred style. Instead **doctest** provides a powerful mechanism for nesting subcases within a test case. For a more detailed discussion see the [**tutorial**](tutorial.md#test-cases-and-subcases).
 
 Test cases and subcases are very easy to use in practice:
 
@@ -10,6 +8,8 @@ Test cases and subcases are very easy to use in practice:
 * **SUBCASE(** _subcase name_ **)**
 
 _test name_ and _subcase name_ are free form, quoted, strings. Test names don't have to be unique within the **doctest** executable. They should also be string literals.
+
+Keep in mind that even though **doctest** is [**thread-safe**](faq.md#is-doctest-thread-aware) - using subcases has to be done only in the main test runner thread.
 
 For examples see the [Tutorial](tutorial.md)
 
@@ -54,27 +54,26 @@ Although **doctest** allows you to group tests together as subcases within a tes
 
 ```c++
 class UniqueTestsFixture {
-  private:
-   static int uniqueID;
-  protected:
-   DBConnection conn;
-  public:
-   UniqueTestsFixture() : conn(DBConnection::createConnection("myDB")) {
-   }
-  protected:
-   int getID() {
-     return ++uniqueID;
-   }
- };
+private:
+    static int uniqueID;
+protected:
+    DBConnection conn;
+public:
+    UniqueTestsFixture() : conn(DBConnection::createConnection("myDB")) {}
+protected:
+    int getID() {
+        return ++uniqueID;
+    }
+};
 
- int UniqueTestsFixture::uniqueID = 0;
+int UniqueTestsFixture::uniqueID = 0;
 
- TEST_CASE_FIXTURE(UniqueTestsFixture, "Create Employee/No Name") {
-   REQUIRE_THROWS(conn.executeSQL("INSERT INTO employee (id, name) VALUES (?, ?)", getID(), ""));
- }
- TEST_CASE_FIXTURE(UniqueTestsFixture, "Create Employee/Normal") {
-   REQUIRE(conn.executeSQL("INSERT INTO employee (id, name) VALUES (?, ?)", getID(), "Joe Bloggs"));
- }
+TEST_CASE_FIXTURE(UniqueTestsFixture, "Create Employee/No Name") {
+    REQUIRE_THROWS(conn.executeSQL("INSERT INTO employee (id, name) VALUES (?, ?)", getID(), ""));
+}
+TEST_CASE_FIXTURE(UniqueTestsFixture, "Create Employee/Normal") {
+    REQUIRE(conn.executeSQL("INSERT INTO employee (id, name) VALUES (?, ?)", getID(), "Joe Bloggs"));
+}
 ```
 
 The two test cases here will create uniquely-named derived classes of UniqueTestsFixture and thus can access the `getID()` protected method and `conn` member variables. This ensures that both the test cases are able to create a DBConnection using the same method (DRY principle) and that any ID's created are unique such that the order that tests are executed does not matter.
@@ -165,3 +164,5 @@ TEST_SUITE("not longer than 500ms" * doctest::timeout(0.5)) {
 ---------------
 
 [Home](readme.md#reference)
+
+<p align="center"><img src="../../scripts/data/logo/icon_2.svg"></p>

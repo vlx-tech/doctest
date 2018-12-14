@@ -16,6 +16,7 @@ Defining something ```globally``` means for every source file of the binary (exe
 - [**```DOCTEST_CONFIG_SUPER_FAST_ASSERTS```**](#doctest_config_super_fast_asserts)
 - [**```DOCTEST_CONFIG_USE_IOSFWD```**](#doctest_config_use_iosfwd)
 - [**```DOCTEST_CONFIG_NO_COMPARISON_WARNING_SUPPRESSION```**](#doctest_config_no_comparison_warning_suppression)
+- [**```DOCTEST_CONFIG_OPTIONS_PREFIX```**](#doctest_config_options_prefix)
 - [**```DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS```**](#doctest_config_no_unprefixed_options)
 - [**```DOCTEST_CONFIG_NO_TRY_CATCH_IN_ASSERTS```**](#doctest_config_no_try_catch_in_asserts)
 - [**```DOCTEST_CONFIG_NO_EXCEPTIONS```**](#doctest_config_no_exceptions)
@@ -30,21 +31,6 @@ Defining something ```globally``` means for every source file of the binary (exe
 - [**```DOCTEST_CONFIG_NO_POSIX_SIGNALS```**](#doctest_config_no_posix_signals)
 - [**```DOCTEST_CONFIG_INCLUDE_TYPE_TRAITS```**](#doctest_config_include_type_traits)
 
-Detection of modern C++ features:
-
-- [**```DOCTEST_CONFIG_WITH_DELETED_FUNCTIONS```**](#doctest_config_with_deleted_functions)
-- [**```DOCTEST_CONFIG_WITH_RVALUE_REFERENCES```**](#doctest_config_with_rvalue_references)
-- [**```DOCTEST_CONFIG_WITH_VARIADIC_MACROS```**](#doctest_config_with_variadic_macros)
-- [**```DOCTEST_CONFIG_WITH_NULLPTR```**](#doctest_config_with_nullptr)
-- [**```DOCTEST_CONFIG_WITH_LONG_LONG```**](#doctest_config_with_long_long)
-- [**```DOCTEST_CONFIG_WITH_STATIC_ASSERT```**](#doctest_config_with_static_assert)
-- [**```DOCTEST_CONFIG_NO_DELETED_FUNCTIONS```**](#doctest_config_no_deleted_functions)
-- [**```DOCTEST_CONFIG_NO_RVALUE_REFERENCES```**](#doctest_config_no_rvalue_references)
-- [**```DOCTEST_CONFIG_NO_VARIADIC_MACROS```**](#doctest_config_no_variadic_macros)
-- [**```DOCTEST_CONFIG_NO_NULLPTR```**](#doctest_config_no_nullptr)
-- [**```DOCTEST_CONFIG_NO_LONG_LONG```**](#doctest_config_no_long_long)
-- [**```DOCTEST_CONFIG_NO_STATIC_ASSERT```**](#doctest_config_no_static_assert)
-
 For most people the only configuration needed is telling **doctest** which source file should host all the implementation code:
 
 ### **```DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN```**
@@ -54,13 +40,13 @@ For most people the only configuration needed is telling **doctest** which sourc
 #include "doctest.h"
 ```
 
-This should be defined only in the source file where the library is implemented.
+This should be defined only in the source file where the library is implemented. It also creates a ```main()``` entry point.
 
 ### **```DOCTEST_CONFIG_IMPLEMENT```**
 
 If the client wants to [**supply the ```main()``` function**](main.md) (either to set an option with some value from the code or to integrate the framework into his existing project codebase) this identifier should be used.
 
-This should be defined only in the source file where the library is implemented. It also creates a ```main()``` entry point.
+This should be defined only in the source file where the library is implemented.
 
 ### **```DOCTEST_CONFIG_DISABLE```**
 
@@ -107,9 +93,11 @@ This should be defined globally.
 
 ### **```DOCTEST_CONFIG_SUPER_FAST_ASSERTS```**
 
-This makes the fast assert macros (```FAST_CHECK_EQ(a,b)``` - with a ```FAST_``` prefix) compile [**even faster**](benchmarks.md#cost-of-an-assertion-macro)! (50-80%)
+This config option makes the assert macros (except for those dealing with exceptions) compile [**much faster**](benchmarks.md#cost-of-an-assertion-macro)! (31-91% - depending on the type - [**normal**](assertions.md#expression-decomposing-asserts) or [**binary**](assertions.md#binary-and-unary-asserts))
 
-Each fast assert is turned into a single function call - the only downside of this is: if an assert fails and a debugger is attached - when it breaks it will be in an internal function - the user will have to go 1 level up in the callstack to see the actual assert.
+Each assert is turned into a single function call - the only downside of this is: if an assert fails and a debugger is attached - when it breaks it will be in an internal function - the user will have to go 1 level up in the callstack to see the actual assert.
+
+It also implies [**```DOCTEST_CONFIG_NO_TRY_CATCH_IN_ASSERTS```**](#doctest_config_no_try_catch_in_asserts) (so exceptions thrown during the evaluation of an assert are not caught by the assert itself but by the testing framework - meaning that the test case is immediately aborted).
 
 This can be defined both globally and in specific source files only.
 
@@ -134,6 +122,12 @@ You can checkout [**this**](https://github.com/onqtam/doctest/issues/16#issuecom
 
 This can be defined both globally and in specific source files only.
 
+### **```DOCTEST_CONFIG_OPTIONS_PREFIX```**
+
+Defining this as a string will change the prefix of the [**command line**](commandline.md) options to use the given prefix instead of the default ```dt-``` prefix. This can be useful for integrating the testing framework into a client codebase, where a command option prefix like ```selftest-``` might be more clear to users.
+
+This should be defined only in the source file where the library is implemented (it's relevant only there).
+
 ### **```DOCTEST_CONFIG_NO_UNPREFIXED_OPTIONS```**
 
 This will disable the short versions of the [**command line**](commandline.md) options and only the versions with ```--dt-``` prefix will be parsed by **doctest** - this is possible for easy interoperability with client command line option handling when the testing framework is integrated within a client codebase - so there are no clashes and so that the user can exclude everything starting with ```--dt-``` from their option parsing.
@@ -145,9 +139,11 @@ This should be defined only in the source file where the library is implemented 
 This will remove all ```try``` / ```catch``` sections from:
 
 - the [normal asserts](assertions.md#expression-decomposing-asserts)
-- the [binary and unary asserts](assertions.md#binary-and-unary-asserts) - making them functionally the same as the [**fast asserts**](assertions.md#fast-asserts) (but not for compile time speed)
+- the [binary and unary asserts](assertions.md#binary-and-unary-asserts)
 
 so exceptions thrown while evaluating the expression in an assert will terminate the current test case.
+
+This can be used for some mild compile time savings but for greater impact look into [**```DOCTEST_CONFIG_SUPER_FAST_ASSERTS```**](configuration.md#doctest_config_super_fast_asserts).
 
 This can be defined both globally and in specific source files only.
 
@@ -245,78 +241,8 @@ This can be used to include the ```<type_traits>``` C++11 header. That in turn w
 
 This can be defined both globally and in specific source files only.
 
-### **```DOCTEST_CONFIG_WITH_DELETED_FUNCTIONS```**
-
-doctest tries to detect if c++11 deleted functions are available but if it doesn't detect it - the user might define this.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_WITH_RVALUE_REFERENCES```**
-
-doctest tries to detect if c++11 rvalue references are available but if it doesn't detect it - the user might define this.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_WITH_VARIADIC_MACROS```**
-
-doctest tries to detect if c++11 variadic macros are available but if it doesn't detect it - the user might define this.
-
-This can be defined both globally and in specific source files only.
-
-### **```DOCTEST_CONFIG_WITH_NULLPTR```**
-
-doctest tries to detect if c++11 ```nullptr``` is available but if it doesn't detect it - the user might define this.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_WITH_LONG_LONG```**
-
-doctest tries to detect if c++11 ```long long``` is available but if it doesn't detect it - the user might define this.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_WITH_STATIC_ASSERT```**
-
-doctest tries to detect if c++11 ```static_assert()``` is available but if it doesn't detect it - the user might define this.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_NO_DELETED_FUNCTIONS```**
-
-If doctest detects c++11 deleted functions support as available but the user knows better - this can be defined to disable it.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_NO_RVALUE_REFERENCES```**
-
-If doctest detects c++11 rvalue references support as available but the user knows better - this can be defined to disable it.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_NO_VARIADIC_MACROS```**
-
-If doctest detects c++11 variadic macros support as available but the user knows better - this can be defined to disable it.
-
-This can be defined both globally and in specific source files only.
-
-### **```DOCTEST_CONFIG_NO_NULLPTR```**
-
-If doctest detects c++11 ```nullptr``` support as available but the user knows better - this can be defined to disable it.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_NO_LONG_LONG```**
-
-If doctest detects c++11 ```long long``` support as available but the user knows better - this can be defined to disable it.
-
-This should be defined globally.
-
-### **```DOCTEST_CONFIG_NO_STATIC_ASSERT```**
-
-If doctest detects c++11 ```static_assert()``` support as available but the user knows better - this can be defined to disable it.
-
-This should be defined globally.
-
 ---------------
 
 [Home](readme.md#reference)
+
+<p align="center"><img src="../../scripts/data/logo/icon_2.svg"></p>

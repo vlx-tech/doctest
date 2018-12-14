@@ -18,16 +18,19 @@
 #define my_warn_false               DOCTEST_WARN_FALSE
 #define my_warn_throws              DOCTEST_WARN_THROWS
 #define my_warn_throws_as           DOCTEST_WARN_THROWS_AS
+#define my_warn_throws_with         DOCTEST_WARN_THROWS_WITH
 #define my_warn_nothrow             DOCTEST_WARN_NOTHROW
 #define my_check                    DOCTEST_CHECK
 #define my_check_false              DOCTEST_CHECK_FALSE
 #define my_check_throws             DOCTEST_CHECK_THROWS
 #define my_check_throws_as          DOCTEST_CHECK_THROWS_AS
+#define my_check_throws_with        DOCTEST_CHECK_THROWS_WITH
 #define my_check_nothrow            DOCTEST_CHECK_NOTHROW
 #define my_require                  DOCTEST_REQUIRE
 #define my_require_false            DOCTEST_REQUIRE_FALSE
 #define my_require_throws           DOCTEST_REQUIRE_THROWS
 #define my_require_throws_as        DOCTEST_REQUIRE_THROWS_AS
+#define my_require_throws_with      DOCTEST_REQUIRE_THROWS_WITH
 #define my_require_nothrow          DOCTEST_REQUIRE_NOTHROW
 
 #define my_scenario                 DOCTEST_SCENARIO
@@ -61,30 +64,5 @@
 #define my_warn_unary_false         DOCTEST_WARN_UNARY_FALSE
 #define my_check_unary_false        DOCTEST_CHECK_UNARY_FALSE
 #define my_require_unary_false      DOCTEST_REQUIRE_UNARY_FALSE
-
-#define my_fast_warn_eq             DOCTEST_FAST_WARN_EQ
-#define my_fast_check_eq            DOCTEST_FAST_CHECK_EQ
-#define my_fast_require_eq          DOCTEST_FAST_REQUIRE_EQ
-#define my_fast_warn_ne             DOCTEST_FAST_WARN_NE
-#define my_fast_check_ne            DOCTEST_FAST_CHECK_NE
-#define my_fast_require_ne          DOCTEST_FAST_REQUIRE_NE
-#define my_fast_warn_gt             DOCTEST_FAST_WARN_GT
-#define my_fast_check_gt            DOCTEST_FAST_CHECK_GT
-#define my_fast_require_gt          DOCTEST_FAST_REQUIRE_GT
-#define my_fast_warn_lt             DOCTEST_FAST_WARN_LT
-#define my_fast_check_lt            DOCTEST_FAST_CHECK_LT
-#define my_fast_require_lt          DOCTEST_FAST_REQUIRE_LT
-#define my_fast_warn_ge             DOCTEST_FAST_WARN_GE
-#define my_fast_check_ge            DOCTEST_FAST_CHECK_GE
-#define my_fast_require_ge          DOCTEST_FAST_REQUIRE_GE
-#define my_fast_warn_le             DOCTEST_FAST_WARN_LE
-#define my_fast_check_le            DOCTEST_FAST_CHECK_LE
-#define my_fast_require_le          DOCTEST_FAST_REQUIRE_LE
-#define my_fast_warn_unary          DOCTEST_FAST_WARN_UNARY
-#define my_fast_check_unary         DOCTEST_FAST_CHECK_UNARY
-#define my_fast_require_unary       DOCTEST_FAST_REQUIRE_UNARY
-#define my_fast_warn_unary_false    DOCTEST_FAST_WARN_UNARY_FALSE
-#define my_fast_check_unary_false   DOCTEST_FAST_CHECK_UNARY_FALSE
-#define my_fast_require_unary_false DOCTEST_FAST_REQUIRE_UNARY_FALSE
 
 #endif // MY_PROXY_MACROS
