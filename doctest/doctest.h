@@ -2895,19 +2895,6 @@ String& String::operator=(const String& other) {
     return *this;
 }
 
-String::String(const char* in, size_t in_len) {
-    if(in_len <= last) {
-        detail::my_memcpy(buf, in, in_len + 1);
-        setLast(last - in_len);
-    } else {
-        setOnHeap();
-        data.size     = in_len;
-        data.capacity = data.size + 1;
-        data.ptr      = new char[data.capacity];
-        detail::my_memcpy(data.ptr, in, in_len + 1);
-    }
-}
-
 String& String::operator+=(const String& other) {
     const unsigned my_old_size = size();
     const unsigned other_size  = other.size();
