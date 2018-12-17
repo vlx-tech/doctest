@@ -1,6 +1,0 @@
-# doctest
----
-exports:
-  header-dirs: [ doctest ]
-  modules:
-    doctest: fips
